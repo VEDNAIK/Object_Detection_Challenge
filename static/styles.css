@@ -1,0 +1,231 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f3f4f6;
+    color: #333;
+}
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    background-color: #003366;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Navbar Logo and Company Name Alignment */
+.navbar-logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-logo .company-name {
+    margin-left: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: white;
+}
+
+
+.navbar-tabs {
+    list-style-type: none;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-tabs li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1em;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.navbar-tabs li a:hover {
+    background-color: #ffcc33;
+}
+
+/* Upload Container */
+.upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 100%;
+}
+
+.upload-container h2 {
+    font-size: 1.5em;
+    color: #003366;
+    margin-bottom: 15px;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0055a5;
+}
+
+/* Loader Animation */
+.loader {
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 6px solid #003366;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-top: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Result Display */
+#result img {
+    max-width: 100%;
+    margin-top: 15px;
+    border: 2px solid #003366;
+    border-radius: 8px;
+}
+
+/* Video Container */
+.video-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    max-width: 1300px;
+    width: 100%;
+}
+
+.video-container h2 {
+    font-size: 1.5em;
+    color: #003366;
+    margin-bottom: 15px;
+}
+
+/* Side-by-side Video and Canvas */
+.video-feed {
+    display: flex;
+    gap: 20px;
+}
+
+#canvas, #video {
+    border: 5px solid #ddd;
+    border-radius: 10px;
+    width: 100%;
+    height: auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    max-width: 640px;
+}
+
+/* Dropdown Styling */
+#modelSelect {
+    padding: 8px;
+    margin-top: 10px;
+    border: 2px solid #003366;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: #003366;
+    font-size: 1em;
+    width: 100%;
+    max-width: 200px;
+}
+
+/* Confidence Scores Display */
+#confidenceScoresContainer {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#confidenceScoresContainer h3 {
+    font-size: 1.2em;
+    color: #003366;
+    margin-bottom: 10px;
+}
+
+.confidence-scores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.confidence-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 8px 12px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 220px;
+    border: 1px solid #ddd;
+}
+
+.confidence-item .label {
+    font-size: 1em;
+    color: #333;
+    font-weight: 500;
+}
+
+.confidence-item .badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Badge color coding */
+.badge.high {
+    background-color: #4CAF50; /* Green for high confidence */
+}
+
+.badge.medium {
+    background-color: #FF9800; /* Orange for medium confidence */
+}
+
+.badge.low {
+    background-color: #F44336; /* Red for low confidence */
+}

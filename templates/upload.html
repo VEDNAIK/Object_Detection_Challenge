@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload Object Detection</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body onload="openImageUpload()">
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <span><img style="border-radius: 50%;" width="40px" height="40px" src="/static/images/ng.jpg"></span>
+            <span class="company-name">Northrop Grumman Image Upload Object Detection System</span> 
+        </div>
+    </nav>
+    <div class="upload-container" id="uploadContainer" style="display: none;">
+        <h2>Upload Image</h2>
+        <label for="modelSelect">Choose Model:</label>
+        <select style="width: 200px;" id="modelSelect">
+            <option value="combined">YOLOv7 + DINO</option>
+            <option value="yolov8">YOLOv8</option>
+            <option value="yolov7">YOLOv7</option>
+            <option value="owlvit">Grounding DINO</option>
+            <option value="CLIP">CLIP</option>
+        </select>
+        <input type="file" id="imageUpload" accept="image/*">
+        <button onclick="uploadImage()">Upload</button>
+        <div class="loader" id="loader" style="display: none;"></div>
+        
+        <!-- Result Display -->
+        <div id="result">
+            <!-- Annotated Image Display -->
+            <div id="annotatedImageContainer"></div>
+
+            <!-- Enhanced Confidence Scores Display -->
+            <div id="confidenceScoresContainer">
+                <h3>Confidence Scores:</h3>
+                <div id="confidenceScoresList" class="confidence-scores"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        const socket = io.connect(location.origin);
+
+        function openImageUpload() {
+            document.getElementById('uploadContainer').style.display = 'block';
+            document.getElementById('result').style.display = 'none';  // Hide result initially
+        }
+
+        function uploadImage() {
+            const fileInput = document.getElementById('imageUpload');
+            const modelSelect = document.getElementById('modelSelect').value;
+            if (fileInput.files.length === 0) {
+                alert("Please select an image to upload");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('model', modelSelect);
+
+            document.getElementById('loader').style.display = 'block';
+
+            fetch('/upload_image', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+
+                if (data.processed_image) {
+                    document.getElementById('annotatedImageContainer').innerHTML = `<img src="${data.processed_image}" alt="Processed Image">`;
+
+                    // Display confidence scores with enhanced styling
+                    const confidenceScoresList = document.getElementById('confidenceScoresList');
+                    confidenceScoresList.innerHTML = ''; // Clear previous scores
+                    data.confidence_scores.forEach(item => {
+                        const scoreItem = document.createElement('div');
+                        scoreItem.className = 'confidence-item';
+                        const badgeClass = parseFloat(item.confidence) > 85 ? 'high' : parseFloat(item.confidence) > 65 ? 'medium' : 'low';
+                        scoreItem.innerHTML = `
+                            <span class="label">${item.label}</span>
+                            <span class="badge ${badgeClass}">${item.confidence}%</span>
+                        `;
+                        confidenceScoresList.appendChild(scoreItem);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error processing image:", error);
+                document.getElementById('loader').style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>

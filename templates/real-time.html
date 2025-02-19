@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Time Object Detection</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body onload="openRealTimeDetection()">
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <span><img style="border-radius: 50%;" width="40px" height="40px" src="/static/images/ng.jpg"></span>
+            <span style="font-size: larger; margin-bottom: 2px;" class="company-name">Northrop Grumman Real Time Object Detection System</span> 
+        </div>
+    </nav>
+    <div class="video-container" id="videoContainer">
+        <h2>Real-Time Detection</h2>
+        <div class="video-feed">
+            <video id="video" width="500" height="380" autoplay></video>
+            <canvas id="canvas" width="500" height="380"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+      const socket = io.connect(location.origin);
+      let videoStream;
+  
+      function openRealTimeDetection() {
+          document.getElementById('videoContainer').style.display = 'block';
+          startRealTimeDetection();
+          setActiveTab('realTimeTab');
+      }
+  
+      function startRealTimeDetection() {
+          const video = document.getElementById('video');
+          const canvas = document.getElementById('canvas');
+          const ctx = canvas.getContext('2d');
+  
+          navigator.mediaDevices.getUserMedia({ video: true })
+              .then(stream => {
+                  video.srcObject = stream;
+                  videoStream = stream; // Save the stream to stop it later
+              })
+              .catch(error => console.error("Webcam not accessible:", error));
+  
+          function captureFrame() {
+              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+              const dataURL = canvas.toDataURL('image/jpeg');
+              socket.emit('video_frame', dataURL);
+  
+              setTimeout(() => {
+                  requestAnimationFrame(captureFrame);
+              }, 200);
+          }
+  
+          video.addEventListener('play', captureFrame); // Add 'play' event listener for capturing frames
+      }
+  
+    
+      socket.on('response_frame', data => {
+          const img = new Image();
+          img.src = data.frame;
+          img.onload = () => {
+              const canvas = document.getElementById('canvas');
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          };
+      });
+  </script>
+  
+</body>
+</html>
